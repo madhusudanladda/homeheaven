@@ -1,0 +1,78 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>Dashboard - Home Heaven</title>
+<link rel="stylesheet" href="/css/style.css"></head>
+<body>
+<div class="container">
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <h1>Home Heaven</h1>
+    <div>
+      <a href="/upload-property.html">Upload Property</a> | 
+      <a href="/admin.html">My Properties</a> | 
+      <a href="/login.html" id="logoutLink">Logout</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Search</h3>
+    <form id="searchForm" style="display:flex;gap:8px;flex-wrap:wrap">
+      <input name="city" placeholder="City or area (e.g., Karadi, Pune)">
+      <input name="minRent" type="number" placeholder="Min Rent">
+      <input name="maxRent" type="number" placeholder="Max Rent">
+      <select name="type">
+        <option value="">Any</option>
+        <option>PG</option><option>Hostel</option><option>Flat</option><option>House</option>
+      </select>
+      <button type="submit">Search</button>
+    </form>
+  </div>
+
+  <div id="results" class="grid"></div>
+</div>
+
+<script>
+async function renderResults(q=''){
+  const res = await fetch('/properties/search'+q);
+  const data = await res.json();
+  const container = document.getElementById('results');
+  container.innerHTML = '';
+  if(data.length===0){ container.innerHTML='<div class="card">No properties found</div>'; return; }
+  data.forEach(p=>{
+    const card=document.createElement('div'); card.className='card';
+    const imgs = p.images ? p.images.split(',') : [];
+    card.innerHTML = `
+      <div class="property-card">
+        <img src="${imgs.length?'/uploads/'+imgs[0]:'/images/placeholder.png'}" />
+        <div style="flex:1">
+          <h4>${p.name || 'No title'}</h4>
+          <p class="small">${p.city} • ₹${p.rent}</p>
+          <p class="small">${(p.description||'').substring(0,120)}...</p>
+          <p><a href="/property-details.html?id=${p.id}">View Details</a></p>
+        </div>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+document.getElementById('searchForm').onsubmit=async(e)=>{
+  e.preventDefault();
+  const f=new FormData(e.target);
+  const city = f.get('city') || '';
+  const min = f.get('minRent') || '';
+  const max = f.get('maxRent') || '';
+  const type = f.get('type') || '';
+  const q = '?city='+encodeURIComponent(city)+'&minRent='+min+'&maxRent='+max+'&type='+encodeURIComponent(type);
+  renderResults(q);
+}
+
+// initial load
+renderResults('');
+document.getElementById('logoutLink').onclick = async (e)=>{
+  e.preventDefault();
+  await fetch('/auth/logout',{method:'POST'});
+  window.location='/login.html';
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>Upload Property - Home Heaven</title>
+<link rel="stylesheet" href="/css/style.css"></head>
+<body>
+<div class="container">
+  <div class="card" style="max-width:800px;margin:0 auto">
+    <h2>Upload Property</h2>
+    <form id="uploadForm" enctype="multipart/form-data">
+      <input name="name" placeholder="Property name" required>
+      <input name="address" placeholder="Address" required>
+      <input name="city" placeholder="City / Area" required>
+      <select name="propertyType" id="ptype" required>
+        <option>PG</option><option>Hostel</option><option>Flat</option><option>House</option>
+      </select>
+      <input name="rent" type="number" placeholder="Rent" required>
+      <input name="sqft" id="sqft" placeholder="Square feet (for Flats)">
+      <select name="sharingOption" id="sharing">
+        <option value="">Select sharing (for PG)</option>
+        <option>2-sharing</option><option>3-sharing</option><option>4-sharing</option>
+      </select>
+      <textarea name="description" placeholder="Description (min 100 words)" rows="6" required></textarea>
+      <input type="file" name="images" multiple accept="image/*">
+      <button type="submit">Upload</button>
+    </form>
+    <div id="msg"></div>
+  </div>
+</div>
+<script>
+document.getElementById('uploadForm').onsubmit=async(e)=>{
+  e.preventDefault();
+  const f=new FormData(e.target);
+  const desc = f.get('description')||'';
+  const wc = desc.trim().split(/\s+/).filter(s=>s).length;
+  if(wc < 100){ document.getElementById('msg').innerText = 'Description must be at least 100 words. Current: '+wc; return; }
+  const res = await fetch('/properties/upload',{method:'POST', body: f});
+  const t = await res.text();
+  if(res.ok){ 
+    document.getElementById('msg').innerHTML = 'Property uploaded successfully!<br><a href="/dashboard.html" style="color:blue;text-decoration:underline;cursor:pointer">← Back to Dashboard</a>'; 
+    document.getElementById('uploadForm').style.display='none';
+  } else { 
+    document.getElementById('msg').innerText = t; 
+  }
+}
+</script>
+</body>
+</html>

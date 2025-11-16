@@ -1,0 +1,55 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>Register - Home Heaven</title>
+<link rel="stylesheet" href="/css/style.css">
+<style>
+  .input-group { position: relative; }
+  .pin-hint { font-size: 11px; color: #666; margin-top: 4px; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="card" style="max-width:520px;margin:0 auto">
+    <h2>Register</h2>
+    <form id="regForm">
+      <input name="username" placeholder="Username" required>
+      <input name="email" type="email" placeholder="Email" required>
+      <input name="phone" placeholder="Mobile number" required>
+      <input type="password" name="password" placeholder="Password" required>
+      <input type="password" name="confirmPassword" placeholder="Confirm Password" required>
+      <div class="input-group">
+        <input name="pin" type="text" placeholder="Set 4-Digit PIN (0000-9999)" maxlength="4" inputmode="numeric" required>
+        <div class="pin-hint">💡 Use this PIN to reset your password later</div>
+      </div>
+      <button type="submit">Register</button>
+    </form>
+    <p class="small"><a href="/login.html">Already have account? Login</a></p>
+    <div id="msg"></div>
+  </div>
+</div>
+<script>
+document.getElementById('regForm').onsubmit=async(e)=>{
+  e.preventDefault();
+  const f=new FormData(e.target);
+  const pin = f.get('pin').trim();
+  
+  if(!/^\d{4}$/.test(pin)) {
+    document.getElementById('msg').innerText='❌ PIN must be exactly 4 digits';
+    return;
+  }
+  
+  const body = {
+    username: f.get('username'),
+    email: f.get('email'),
+    phone: f.get('phone'),
+    password: f.get('password'),
+    confirmPassword: f.get('confirmPassword'),
+    pin: pin
+  };
+  const res = await fetch('/auth/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+  const t = await res.text();
+  if(res.ok) { document.getElementById('msg').innerText='✅ Registered. Please login.'; setTimeout(()=>window.location='/login.html', 2000); } else { document.getElementById('msg').innerText = '❌ ' + t; }
+}
+</script>
+</body>
+</html>

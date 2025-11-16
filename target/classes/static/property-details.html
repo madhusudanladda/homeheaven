@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>Property Details - Home Heaven</title>
+<link rel="stylesheet" href="/css/style.css"></head>
+<body>
+<div class="container">
+  <a href="/dashboard.html">← Back to Dashboard</a>
+  <div id="details"></div>
+</div>
+<script>
+function getParam(name){
+  const u = new URL(location.href);
+  return u.searchParams.get(name);
+}
+async function load(){
+  const id = getParam('id');
+  if(!id) { document.getElementById('details').innerText='No property id'; return; }
+  const res = await fetch('/properties/'+id);
+  if(!res.ok){ document.getElementById('details').innerText='Not found'; return; }
+  const p = await res.json();
+  const imgs = p.images ? p.images.split(',') : [];
+  document.getElementById('details').innerHTML = `
+    <div class="card">
+      <h2>${p.name}</h2>
+      <div style="display:flex;gap:12px">
+        <div style="flex:1">
+          ${imgs.map(i=>'<img src="/uploads/'+i+'" style="width:100%;max-width:400px;border-radius:6px;margin-bottom:8px" onerror="this.src=\'/static/uploads/'+i+'\'">').join('')}
+        </div>
+        <div style="flex:1">
+          <p><strong>City:</strong> ${p.city}</p>
+          <p><strong>Rent:</strong> ₹${p.rent}</p>
+          <p><strong>Type:</strong> ${p.propertyType}</p>
+          <p><strong>Sqft:</strong> ${p.sqft || '-'}</p>
+          <p><strong>Sharing:</strong> ${p.sharingOption || '-'}</p>
+          <p><strong>Description:</strong><br>${p.description}</p>
+          ${p.owner ? `
+            <div style="background:#f5f5f5;padding:12px;border-radius:6px;margin:12px 0">
+              <p><strong>Owner:</strong> ${p.owner.username}</p>
+              <p><strong>Email:</strong> ${p.owner.email}</p>
+              <p><strong>Phone:</strong> ${p.owner.phone || 'Not provided'}</p>
+            </div>
+          ` : ''}
+          <button onclick="showContact()">Contact Owner</button>
+          <div id="contact" style="margin-top:12px"></div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+async function showContact(){
+  // For simplicity, owner contact is not exposed via API; show message to owner to add contact in description.
+  document.getElementById('contact').innerHTML = '<p class="small">Owner contact is shown in the description if provided by owner. Otherwise contact details stored in owner profile (not exposed).</p>';
+}
+load();
+</script>
+</body>
+</html>
