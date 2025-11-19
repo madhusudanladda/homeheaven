@@ -1,78 +1,293 @@
 <!doctype html>
-<html>
-<head><meta charset="utf-8"><title>Dashboard - Home Heaven</title>
-<link rel="stylesheet" href="/css/style.css"></head>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>Home Heaven - Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #fafafa;
+      color: #1a1a1a;
+      line-height: 1.6;
+    }
+
+    /* NAVBAR */
+    .navbar {
+      background: white;
+      border-bottom: 1px solid #e5e5e5;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    .nav-wrapper {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 72px;
+    }
+    .logo {
+      font-size: 24px;
+      font-weight: 700;
+      color: #dc2626;
+      text-decoration: none;
+    }
+    .nav-menu {
+      display: flex;
+      gap: 24px;
+      align-items: center;
+    }
+    .nav-menu a {
+      font-size: 15px;
+      font-weight: 500;
+      color: #525252;
+      text-decoration: none;
+    }
+    .nav-menu a:hover { color: #dc2626; }
+
+    .logout-btn {
+      background: #dc2626;
+      color: white !important;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    /* HERO */
+    .hero {
+      background: linear-gradient(to bottom, #fff 0%, #fef2f2 100%);
+      padding: 80px 24px;
+      text-align: center;
+    }
+    .hero h1 {
+      font-size: 52px;
+      font-weight: 700;
+      margin-bottom: 14px;
+    }
+    .hero p {
+      font-size: 18px;
+      color: #737373;
+      max-width: 640px;
+      margin: auto;
+    }
+
+    /* SEARCH BAR */
+    .search-container {
+      max-width: 1100px;
+      margin: -40px auto 0;
+      padding: 0 24px;
+    }
+    .search-box {
+      background: white;
+      padding: 28px;
+      border-radius: 16px;
+      border: 1px solid #e5e5e5;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+    .search-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1.2fr auto;
+      gap: 12px;
+    }
+    .search-input, .search-select {
+      height: 46px;
+      border-radius: 10px;
+      border: 1.5px solid #e5e5e5;
+      padding: 0 14px;
+      font-size: 15px;
+      transition: 0.2s;
+    }
+    .search-input:focus, .search-select:focus {
+      border-color: #dc2626;
+      box-shadow: 0 0 0 3px rgba(220,38,38,0.1);
+      outline: none;
+    }
+    .search-btn {
+      background: #dc2626;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      padding: 0 28px;
+      cursor: pointer;
+    }
+
+    /* PROPERTY GRID */
+    .properties {
+      max-width: 1280px;
+      margin: 60px auto;
+      padding: 0 24px;
+    }
+    .properties-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 24px;
+    }
+    .property-card {
+      background: white;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid #e5e5e5;
+      cursor: pointer;
+      transition: .3s;
+    }
+    .property-card:hover {
+      transform: translateY(-4px);
+      border-color: #dc2626;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    .property-img {
+      width: 100%;
+      height: 230px;
+      object-fit: cover;
+    }
+    .property-body {
+      padding: 20px;
+    }
+    .property-title {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .property-location {
+      font-size: 14px;
+      color: #737373;
+      margin-bottom: 12px;
+    }
+    .property-desc {
+      font-size: 14px;
+      color: #525252;
+      height: 42px;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+    .property-price {
+      color: #dc2626;
+      font-size: 22px;
+      font-weight: 700;
+    }
+    .view-btn {
+      background: #111;
+      padding: 8px 16px;
+      border-radius: 8px;
+      color: white;
+      font-size: 14px;
+      text-decoration: none;
+    }
+  </style>
+</head>
+
 <body>
-<div class="container">
-  <div style="display:flex;justify-content:space-between;align-items:center">
-    <h1>Home Heaven</h1>
-    <div>
-      <a href="/upload-property.html">Upload Property</a> | 
-      <a href="/admin.html">My Properties</a> | 
-      <a href="/login.html" id="logoutLink">Logout</a>
+
+<!-- NAV -->
+<nav class="navbar">
+  <div class="nav-wrapper">
+    <a href="/dashboard.html" class="logo">HomeHeaven</a>
+    <div class="nav-menu">
+      <a href="/upload-property.html">Upload Property</a>
+      <a href="/admin.html">My Properties</a>
+      <a href="/login.html" id="logoutLink" class="logout-btn">Logout</a>
     </div>
   </div>
+</nav>
 
-  <div class="card">
-    <h3>Search</h3>
-    <form id="searchForm" style="display:flex;gap:8px;flex-wrap:wrap">
-      <input name="city" placeholder="City or area (e.g., Karadi, Pune)">
-      <input name="minRent" type="number" placeholder="Min Rent">
-      <input name="maxRent" type="number" placeholder="Max Rent">
-      <select name="type">
+<!-- HERO -->
+<section class="hero">
+  <h1>Find Your Perfect Home</h1>
+  <p>Discover properties across India. Search smart, live better.</p>
+</section>
+
+<!-- SEARCH -->
+<div class="search-container">
+  <div class="search-box">
+    <form id="searchForm" class="search-grid">
+      <input type="text" name="city" class="search-input" placeholder="Enter city...">
+      <input type="number" name="minRent" class="search-input" placeholder="Min Rent">
+      <input type="number" name="maxRent" class="search-input" placeholder="Max Rent">
+      <select name="type" class="search-select">
         <option value="">Any</option>
-        <option>PG</option><option>Hostel</option><option>Flat</option><option>House</option>
+        <option>PG</option>
+        <option>Hostel</option>
+        <option>Flat</option>
+        <option>House</option>
       </select>
-      <button type="submit">Search</button>
+      <button type="submit" class="search-btn">Search</button>
     </form>
   </div>
-
-  <div id="results" class="grid"></div>
 </div>
 
+<!-- PROPERTIES -->
+<section class="properties">
+  <div id="results" class="properties-grid"></div>
+</section>
+
 <script>
-async function renderResults(q=''){
-  const res = await fetch('/properties/search'+q);
+/* ---------- SEARCH RESULTS LOADER (BACKEND WORKS SAME AS OLD) ---------- */
+async function renderResults(q = '') {
+  const res = await fetch('/properties/search' + q);
   const data = await res.json();
-  const container = document.getElementById('results');
-  container.innerHTML = '';
-  if(data.length===0){ container.innerHTML='<div class="card">No properties found</div>'; return; }
-  data.forEach(p=>{
-    const card=document.createElement('div'); card.className='card';
+  const box = document.getElementById('results');
+  box.innerHTML = '';
+
+  if (data.length === 0) {
+    box.innerHTML = "<h2 style='text-align:center;color:#737373;margin-top:40px;'>No properties found</h2>";
+    return;
+  }
+
+  data.forEach(p => {
     const imgs = p.images ? p.images.split(',') : [];
+    const card = document.createElement('div');
+    card.className = 'property-card';
     card.innerHTML = `
-      <div class="property-card">
-        <img src="${imgs.length?'/uploads/'+imgs[0]:'/images/placeholder.png'}" />
-        <div style="flex:1">
-          <h4>${p.name || 'No title'}</h4>
-          <p class="small">${p.city} • ₹${p.rent}</p>
-          <p class="small">${(p.description||'').substring(0,120)}...</p>
-          <p><a href="/property-details.html?id=${p.id}">View Details</a></p>
-        </div>
+      <img class="property-img" src="${imgs.length ? '/uploads/' + imgs[0] : '/images/placeholder.png'}">
+      <div class="property-body">
+        <h3 class="property-title">${p.name}</h3>
+        <div class="property-location">${p.city}</div>
+        <div class="property-desc">${p.description.substring(0, 80)}...</div>
+        <div class="property-price">₹${p.rent}</div>
+        <br>
+        <a href="/property-details.html?id=${p.id}" class="view-btn">View Details</a>
       </div>
     `;
-    container.appendChild(card);
+    box.appendChild(card);
   });
 }
 
-document.getElementById('searchForm').onsubmit=async(e)=>{
+/* Search Handler */
+document.getElementById('searchForm').onsubmit = async (e) => {
   e.preventDefault();
-  const f=new FormData(e.target);
-  const city = f.get('city') || '';
-  const min = f.get('minRent') || '';
-  const max = f.get('maxRent') || '';
-  const type = f.get('type') || '';
-  const q = '?city='+encodeURIComponent(city)+'&minRent='+min+'&maxRent='+max+'&type='+encodeURIComponent(type);
-  renderResults(q);
-}
+  const f = new FormData(e.target);
+  const city = f.get("city") || "";
+  const min = f.get("minRent") || "";
+  const max = f.get("maxRent") || "";
+  const type = f.get("type") || "";
 
-// initial load
-renderResults('');
-document.getElementById('logoutLink').onclick = async (e)=>{
+  const q = `?city=${encodeURIComponent(city)}&minRent=${min}&maxRent=${max}&type=${encodeURIComponent(type)}`;
+  renderResults(q);
+};
+
+/* Load All Results Initially */
+renderResults("");
+
+/* Logout */
+document.getElementById("logoutLink").onclick = async (e) => {
   e.preventDefault();
-  await fetch('/auth/logout',{method:'POST'});
-  window.location='/login.html';
-}
+  await fetch("/auth/logout",{ method:"POST" });
+  window.location = "/login.html";
+};
 </script>
+
 </body>
 </html>

@@ -24,6 +24,11 @@ cd C:\Users\Mladda\Downloads\homeheaven_full
 C:\Users\Mladda\tools\maven\bin\mvn.cmd clean package -DskipTests
 ```
 
+
+Get-Process java -ErrorAction SilentlyContinue | Stop-Process -Force; Start-Sleep -Seconds 2; C:\Users\Mladda\tools\maven\bin\mvn.cmd -DskipTests clean package 2>&1 | Select-Object -Last 20 
+
+
+
 ### Step 3: Run the Application
 
 #### Option A: Run with Java directly (Foreground - See Logs)

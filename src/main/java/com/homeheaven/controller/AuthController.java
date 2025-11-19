@@ -83,4 +83,23 @@ public ResponseEntity<?> login(@RequestBody AuthDto dto, HttpSession session) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    @GetMapping("/me")
+    public ResponseEntity<?> me() {
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || !auth.isAuthenticated()) return ResponseEntity.status(401).body("Not authenticated");
+
+        String name = auth.getName();
+        // try by username then email
+        User u = userService.findByUsernameOrEmail(name);
+        if (u == null) return ResponseEntity.status(404).body("User not found");
+
+        // return safe info
+        var map = new java.util.HashMap<String,Object>();
+        map.put("id", u.getId());
+        map.put("username", u.getUsername());
+        map.put("email", u.getEmail());
+        map.put("role", u.getRole());
+        return ResponseEntity.ok(map);
+    }
 }

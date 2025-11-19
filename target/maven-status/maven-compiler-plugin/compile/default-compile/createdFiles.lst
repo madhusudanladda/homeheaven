@@ -1,9 +1,9 @@
 com\homeheaven\controller\PropertyController.class
+com\homeheaven\service\AutoCreateAdmin.class
 com\homeheaven\model\Property.class
 com\homeheaven\service\FileStorageService.class
 com\homeheaven\repository\PropertyRepository.class
 com\homeheaven\controller\CustomErrorController.class
-com\homeheaven\service\EmailService.class
 com\homeheaven\config\SecurityConfig.class
 com\homeheaven\config\WebConfig.class
 com\homeheaven\dto\RegisterDto.class
@@ -20,5 +20,4 @@ com\homeheaven\dto\ForgotDto.class
 com\homeheaven\dto\ForgotPasswordDto.class
 com\homeheaven\controller\RootController.class
 com\homeheaven\dto\AuthDto.class
-com\homeheaven\dto\OtpVerifyDto.class
 com\homeheaven\controller\AuthController.class

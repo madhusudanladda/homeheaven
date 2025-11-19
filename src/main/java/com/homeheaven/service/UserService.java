@@ -36,8 +36,13 @@ public class UserService {
     }
 
     public User authenticate(String username, String password) {
+        // Allow login by username or by email
         Optional<User> o = userRepo.findByUsername(username);
-        if(o.isEmpty()) return null;
+        if (o.isEmpty()) {
+            // try email
+            o = userRepo.findByEmail(username);
+            if (o.isEmpty()) return null;
+        }
         User u = o.get();
         if(encoder.matches(password, u.getPasswordHash())) return u;
         return null;
@@ -96,5 +101,12 @@ public class UserService {
         userRepo.save(user);
 
         return true;
+    }
+
+    public User findByUsernameOrEmail(String name) {
+        var o = userRepo.findByUsername(name);
+        if (o.isPresent()) return o.get();
+        var e = userRepo.findByEmail(name);
+        return e.orElse(null);
     }
 }

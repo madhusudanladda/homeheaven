@@ -45,6 +45,21 @@ public class AdminController {
         return propertyRepo.findByOwner(user);
     }
 
+    @GetMapping("/users")
+    public List<Map<String, Object>> allUsers() {
+        List<User> users = userRepo.findAll();
+        return users.stream().map(u -> {
+            Map<String, Object> userMap = new HashMap<>();
+            userMap.put("id", u.getId());
+            userMap.put("username", u.getUsername());
+            userMap.put("email", u.getEmail());
+            userMap.put("phone", u.getPhone());
+            userMap.put("role", u.getRole());
+            // Exclude password hash for security
+            return userMap;
+        }).toList();
+    }
+
     @DeleteMapping("/property/{id}")
     public Map<String, Object> deleteProperty(@PathVariable Long id, Authentication auth) {
         Map<String, Object> resp = new HashMap<>();

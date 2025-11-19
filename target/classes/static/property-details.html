@@ -1,57 +1,258 @@
 <!doctype html>
-<html>
-<head><meta charset="utf-8"><title>Property Details - Home Heaven</title>
-<link rel="stylesheet" href="/css/style.css"></head>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <title>Property Details - Home Heaven</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: #fafafa; }
+
+    .navbar {
+      padding: 20px;
+      background: white;
+      border-bottom: 1px solid #e5e5e5;
+    }
+
+    .back-btn {
+      color: #dc2626;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 15px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+
+    .card {
+      background: white;
+      padding: 32px;
+      border-radius: 14px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      margin-bottom: 20px;
+    }
+
+    .property-title {
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .meta { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 20px; }
+    .meta-item { font-size: 15px; color: #555; display: flex; gap: 8px; align-items: center; }
+    .meta-item i { color: #dc2626; }
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: 1.6fr 1fr;
+      gap: 24px;
+    }
+
+    .main-image {
+      width: 100%;
+      height: 420px;
+      border-radius: 12px;
+      object-fit: cover;
+      background: #f0f0f0;
+      margin-bottom: 12px;
+    }
+
+    .thumbnail-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+      gap: 12px;
+    }
+
+    .thumbnail {
+      width: 100%;
+      height: 80px;
+      border-radius: 8px;
+      object-fit: cover;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: 0.2s;
+    }
+
+    .thumbnail:hover,
+    .thumbnail.active {
+      border-color: #dc2626;
+    }
+
+    .info-card {
+      background: white;
+      padding: 24px;
+      border-radius: 14px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+      margin-bottom: 20px;
+    }
+
+    .info-card h3 { font-size: 20px; display: flex; gap: 8px; }
+    .info-card h3 i { color: #dc2626; }
+
+    .price { font-size: 32px; font-weight: 700; color: #dc2626; }
+    .price span { font-size: 14px; color: #666; }
+
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .description { line-height: 1.7; color: #444; }
+
+    .owner-box {
+      background: #fff5f5;
+      padding: 20px;
+      border-radius: 14px;
+      border: 1px solid #fbd5d5;
+    }
+
+    .owner-item { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+    .owner-item i { color: #dc2626; }
+
+    .contact-btn {
+      width: 100%;
+      padding: 14px;
+      background: #dc2626;
+      color: white;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      margin-top: 10px;
+    }
+
+    @media (max-width: 900px) {
+      .content-grid { grid-template-columns: 1fr; }
+      .main-image { height: 260px; }
+    }
+  </style>
+</head>
+
 <body>
+
+<!-- TOP -->
+<div class="navbar">
+  <a href="/dashboard.html" class="back-btn">
+    <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
+  </a>
+</div>
+
+<!-- BODY -->
 <div class="container">
-  <a href="/dashboard.html">← Back to Dashboard</a>
   <div id="details"></div>
 </div>
+
 <script>
-function getParam(name){
-  const u = new URL(location.href);
-  return u.searchParams.get(name);
+function getParam(n) { return new URL(location.href).searchParams.get(n); }
+
+let images = [];
+let currentIndex = 0;
+
+function showImage(i) {
+  currentIndex = i;
+  document.getElementById("mainImage").src = "/uploads/" + images[i];
+  document.querySelectorAll(".thumbnail").forEach((t, idx) => {
+    t.classList.toggle("active", idx === i);
+  });
 }
-async function load(){
-  const id = getParam('id');
-  if(!id) { document.getElementById('details').innerText='No property id'; return; }
-  const res = await fetch('/properties/'+id);
-  if(!res.ok){ document.getElementById('details').innerText='Not found'; return; }
+
+async function load() {
+  const id = getParam("id");
+  if (!id) {
+    document.getElementById("details").innerHTML = "<div class='card'>No ID provided</div>";
+    return;
+  }
+
+  const res = await fetch("/properties/" + id);
+  if (!res.ok) {
+    document.getElementById("details").innerHTML = "<div class='card'>Property not found</div>";
+    return;
+  }
+
   const p = await res.json();
-  const imgs = p.images ? p.images.split(',') : [];
-  document.getElementById('details').innerHTML = `
+  images = p.images ? p.images.split(",") : [];
+
+  document.getElementById("details").innerHTML = `
     <div class="card">
-      <h2>${p.name}</h2>
-      <div style="display:flex;gap:12px">
-        <div style="flex:1">
-          ${imgs.map(i=>'<img src="/uploads/'+i+'" style="width:100%;max-width:400px;border-radius:6px;margin-bottom:8px" onerror="this.src=\'/static/uploads/'+i+'\'">').join('')}
+      <div class="property-title">${p.name || "Untitled"}</div>
+
+      <div class="meta">
+        <div class="meta-item"><i class="fa-solid fa-location-dot"></i> ${p.city || "Not provided"}</div>
+        <div class="meta-item"><i class="fa-solid fa-building"></i> ${p.propertyType || "N/A"}</div>
+        ${p.sqft ? `<div class="meta-item"><i class="fa-solid fa-ruler-combined"></i> ${p.sqft} sq ft</div>` : ""}
+        ${p.sharingOption ? `<div class="meta-item"><i class="fa-solid fa-users"></i> ${p.sharingOption}</div>` : ""}
+      </div>
+
+      <div class="content-grid">
+        <div>
+          ${images.length ? `
+            <img id="mainImage" src="/uploads/${images[0]}" class="main-image">
+
+            ${images.length > 1 ? `
+              <div class="thumbnail-grid">
+                ${images.map((img, i) => `
+                  <img src="/uploads/${img}" class="thumbnail ${i===0 ? 'active':''}" onclick="showImage(${i})">
+                `).join("")}
+              </div>
+            ` : ""}
+          ` : `<p>No images available</p>`}
         </div>
-        <div style="flex:1">
-          <p><strong>City:</strong> ${p.city}</p>
-          <p><strong>Rent:</strong> ₹${p.rent}</p>
-          <p><strong>Type:</strong> ${p.propertyType}</p>
-          <p><strong>Sqft:</strong> ${p.sqft || '-'}</p>
-          <p><strong>Sharing:</strong> ${p.sharingOption || '-'}</p>
-          <p><strong>Description:</strong><br>${p.description}</p>
+
+        <div>
+          <div class="info-card">
+            <h3><i class="fa-solid fa-indian-rupee-sign"></i> Price</h3>
+            <div class="price">₹${p.rent || "N/A"} <span>/month</span></div>
+          </div>
+
+          <div class="info-card">
+            <h3><i class="fa-solid fa-circle-info"></i> Details</h3>
+            <div class="detail-row"><span>Address</span><span>${p.address || "-"}</span></div>
+            <div class="detail-row"><span>Type</span><span>${p.propertyType || "-"}</span></div>
+            ${p.sqft ? `<div class="detail-row"><span>Area</span><span>${p.sqft} sq ft</span></div>` : ""}
+            ${p.sharingOption ? `<div class="detail-row"><span>Sharing</span><span>${p.sharingOption}</span></div>` : ""}
+          </div>
+
           ${p.owner ? `
-            <div style="background:#f5f5f5;padding:12px;border-radius:6px;margin:12px 0">
-              <p><strong>Owner:</strong> ${p.owner.username}</p>
-              <p><strong>Email:</strong> ${p.owner.email}</p>
-              <p><strong>Phone:</strong> ${p.owner.phone || 'Not provided'}</p>
+            <div class="owner-box">
+              <h3 style="margin-bottom:12px;"><i class="fa-solid fa-user"></i> Owner Details</h3>
+              <div class="owner-item"><i class="fa-solid fa-user-circle"></i> ${p.owner.username}</div>
+              <div class="owner-item"><i class="fa-solid fa-envelope"></i> ${p.owner.email}</div>
+              ${p.owner.phone ? `
+                <div class="owner-item"><i class="fa-solid fa-phone"></i> ${p.owner.phone}</div>
+              ` : ""}
+              <button class="contact-btn" onclick="window.location='mailto:${p.owner.email}'">
+                <i class="fa-solid fa-paper-plane"></i> Contact Owner
+              </button>
             </div>
-          ` : ''}
-          <button onclick="showContact()">Contact Owner</button>
-          <div id="contact" style="margin-top:12px"></div>
+          ` : ""}
         </div>
       </div>
+
+      ${p.description ? `
+        <div class="info-card" style="margin-top:20px;">
+          <h3><i class="fa-solid fa-align-left"></i> Description</h3>
+          <p class="description">${p.description}</p>
+        </div>
+      ` : ""}
     </div>
   `;
 }
-async function showContact(){
-  // For simplicity, owner contact is not exposed via API; show message to owner to add contact in description.
-  document.getElementById('contact').innerHTML = '<p class="small">Owner contact is shown in the description if provided by owner. Otherwise contact details stored in owner profile (not exposed).</p>';
-}
+
 load();
 </script>
+
 </body>
 </html>

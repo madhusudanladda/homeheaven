@@ -8,7 +8,6 @@ C:\Users\Mladda\Downloads\homeheaven_full\src\main\java\com\homeheaven\controlle
 C:\Users\Mladda\Downloads\homeheaven_full\src\main\java\com\homeheaven\dto\AuthDto.java
 C:\Users\Mladda\Downloads\homeheaven_full\src\main\java\com\homeheaven\dto\ForgotDto.java
 C:\Users\Mladda\Downloads\homeheaven_full\src\main\java\com\homeheaven\dto\ForgotPasswordDto.java
-C:\Users\Mladda\Downloads\homeheaven_full\src\main\java\com\homeheaven\dto\OtpVerifyDto.java
 C:\Users\Mladda\Downloads\homeheaven_full\src\main\java\com\homeheaven\dto\PropertyUploadDto.java
 C:\Users\Mladda\Downloads\homeheaven_full\src\main\java\com\homeheaven\dto\RegisterDto.java
 C:\Users\Mladda\Downloads\homeheaven_full\src\main\java\com\homeheaven\HomeHeavenApplication.java
@@ -18,7 +17,7 @@ C:\Users\Mladda\Downloads\homeheaven_full\src\main\java\com\homeheaven\model\Use
 C:\Users\Mladda\Downloads\homeheaven_full\src\main\java\com\homeheaven\repository\PinRepository.java
 C:\Users\Mladda\Downloads\homeheaven_full\src\main\java\com\homeheaven\repository\PropertyRepository.java
 C:\Users\Mladda\Downloads\homeheaven_full\src\main\java\com\homeheaven\repository\UserRepository.java
-C:\Users\Mladda\Downloads\homeheaven_full\src\main\java\com\homeheaven\service\EmailService.java
+C:\Users\Mladda\Downloads\homeheaven_full\src\main\java\com\homeheaven\service\AutoCreateAdmin.java
 C:\Users\Mladda\Downloads\homeheaven_full\src\main\java\com\homeheaven\service\FileStorageService.java
 C:\Users\Mladda\Downloads\homeheaven_full\src\main\java\com\homeheaven\service\PropertyService.java
 C:\Users\Mladda\Downloads\homeheaven_full\src\main\java\com\homeheaven\service\UserService.java

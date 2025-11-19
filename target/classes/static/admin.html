@@ -1,29 +1,36 @@
 <!doctype html>
 <html>
-<head><meta charset="utf-8"><title>My Properties - Home Heaven</title>
+<head><meta charset="utf-8"><title>Admin / My Properties - Home Heaven</title>
 <link rel="stylesheet" href="/css/style.css"></head>
 <body>
 <div class="container">
   <div style="display:flex;justify-content:space-between;align-items:center">
-    <h1>My Properties</h1>
+    <h1 id="pageTitle">My Properties</h1>
     <div>
       <a href="/dashboard.html">Back to Dashboard</a> | <a href="/login.html" id="logoutLink">Logout</a>
     </div>
+  </div>
+
+  <div id="adminPanel">
+    <!-- Admin-only sections will be inserted here -->
   </div>
 
   <div id="results" class="grid"></div>
 </div>
 
 <script>
+async function fetchJson(path, opts) {
+  const res = await fetch(path, opts);
+  if (!res.ok) throw res;
+  return res.json();
+}
+
 async function loadMyProperties() {
   try {
     const res = await fetch('/admin/my-properties');
-    // If user is not authenticated or not authorized, redirect to login
     if (res.status === 401 || res.status === 403) {
-      // show login prompt and redirect
       document.getElementById('results').innerHTML = '<div class="card">Please log in to view your properties. Redirecting to login...</div>';
-      // redirect after a short delay
-      setTimeout(()=> window.location = '/login.html', 1500);
+      setTimeout(()=> window.location = '/login.html', 1200);
       return;
     }
     if (!res.ok) {
@@ -31,65 +38,185 @@ async function loadMyProperties() {
       return;
     }
     const data = await res.json();
-    const container = document.getElementById('results');
-    container.innerHTML = '';
-    
-    if (data.length === 0) {
-      container.innerHTML = '<div class="card">You have not uploaded any properties yet. <a href="/upload-property.html">Upload one now</a></div>';
-      return;
-    }
-    
-    data.forEach(p => {
-      const card = document.createElement('div');
-      card.className = 'card';
-      const imgs = p.images ? p.images.split(',') : [];
-      card.innerHTML = `
-        <div class="property-card">
-          <img src="${imgs.length ? '/uploads/' + imgs[0] : '/images/placeholder.png'}" />
-          <div style="flex:1">
-            <h4>${p.name || 'No title'}</h4>
-            <p class="small">${p.city} • ₹${p.rent}</p>
-            <p class="small">${(p.description || '').substring(0, 120)}...</p>
-            <p>
-              <a href="/property-details.html?id=${p.id}">View Details</a> | 
-              <a href="#" onclick="deleteProperty(${p.id}, event)" style="color:red;">Delete</a>
-            </p>
-          </div>
-        </div>
-      `;
-      container.appendChild(card);
-    });
+    renderPropertiesList(data);
   } catch (err) {
     console.error('Error:', err);
     document.getElementById('results').innerHTML = '<div class="card">Error loading properties</div>';
   }
 }
 
-async function deleteProperty(propId, event) {
-  event.preventDefault();
-  if (!confirm('Are you sure you want to delete this property?')) {
+function renderPropertiesList(data) {
+  const container = document.getElementById('results');
+  container.innerHTML = '';
+
+  if (!data || data.length === 0) {
+    container.innerHTML = `
+      <div class="card" style="text-align:center;padding:30px;">
+        <i class="fa-solid fa-circle-info" style="font-size:26px;color:#dc2626;"></i>
+        <p style="margin-top:10px;color:#555;">No properties found.</p>
+      </div>
+    `;
     return;
   }
-  
+
+  container.style.display = "grid";
+  container.style.gridTemplateColumns = "repeat(auto-fill, minmax(320px, 1fr))";
+  container.style.gap = "24px";
+
+  data.forEach(p => {
+    const imgs = p.images ? p.images.split(',') : [];
+
+    const card = document.createElement('div');
+    card.style.background = "white";
+    card.style.border = "1px solid #e5e5e5";
+    card.style.borderRadius = "16px";
+    card.style.overflow = "hidden";
+    card.style.boxShadow = "0 4px 12px rgba(0,0,0,0.08)";
+    card.style.transition = "all 0.25s";
+
+    card.onmouseenter = () => card.style.transform = "translateY(-6px)";
+    card.onmouseleave = () => card.style.transform = "translateY(0px)";
+
+    card.innerHTML = `
+      <div style="height:200px;overflow:hidden;">
+        <img src="${imgs.length ? '/uploads/' + imgs[0] : '/images/placeholder.png'}"
+             style="width:100%;height:100%;object-fit:cover;">
+      </div>
+
+      <div style="padding:20px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <h3 style="font-size:18px;font-weight:700;color:#1a1a1a;margin:0;">
+            ${p.name || 'Untitled'}
+          </h3>
+          <span style="background:#fee2e2;color:#dc2626;padding:4px 10px;border-radius:8px;font-size:12px;font-weight:600;">
+            ${p.propertyType || "N/A"}
+          </span>
+        </div>
+
+        <p style="margin:10px 0;color:#737373;font-size:14px;">
+          <i class="fa-solid fa-location-dot" style="color:#dc2626;"></i>
+          ${p.city || "Unknown"}
+        </p>
+
+        <p style="color:#dc2626;font-size:22px;font-weight:700;margin-bottom:12px;">
+          ₹${p.rent ? p.rent.toLocaleString() : 'N/A'}
+          <span style="color:#737373;font-size:14px;">/month</span>
+        </p>
+
+        <p style="color:#555;font-size:14px;line-height:1.4;min-height:40px;">
+          ${(p.description || '').substring(0, 80)}...
+        </p>
+
+        <div style="margin-top:16px;display:flex;gap:10px;">
+          <a href="/property-details.html?id=${p.id}"
+             style="flex:1;text-align:center;padding:10px 0;background:#dc2626;color:white;border-radius:8px;font-weight:600;text-decoration:none;">
+            View
+          </a>
+
+          <a href="/upload-property.html?id=${p.id}"
+             style="flex:1;text-align:center;padding:10px 0;background:#1a1a1a;color:white;border-radius:8px;font-weight:600;text-decoration:none;">
+            Edit
+          </a>
+
+          <button onclick="deleteProperty(${p.id}, event)"
+            style="flex:1;padding:10px 0;background:#b91c1c;color:white;border:none;border-radius:8px;font-weight:600;cursor:pointer;">
+            Delete
+          </button>
+        </div>
+
+        ${p.owner ? `
+          <p style="margin-top:14px;font-size:13px;color:#737373;">
+            Owner: <strong>${p.owner.username || p.owner.email}</strong>
+          </p>
+        ` : ""}
+      </div>
+    `;
+
+    container.appendChild(card);
+  });
+}
+
+
+async function deleteProperty(propId, event) {
+  event && event.preventDefault();
+  if (!confirm('Are you sure you want to delete this property?')) return;
   try {
     const res = await fetch('/admin/property/' + propId, { method: 'DELETE' });
     const data = await res.json();
-    
-    if (data.success) {
-      alert('Property deleted successfully');
-      loadMyProperties(); // reload the list
-    } else {
-      alert('Error: ' + (data.message || 'Could not delete property'));
-    }
+    if (data.success) { alert('Property deleted'); loadAdminData(); } else { alert('Error: '+(data.message||'Could not delete')); }
+  } catch (err) { console.error(err); alert('Error deleting property'); }
+}
+
+function renderAdminCounts(counts) {
+  const adminPanel = document.getElementById('adminPanel');
+  const box = document.createElement('div');
+  box.className = 'card';
+  box.innerHTML = `
+    <h3>Overview</h3>
+    <p><strong>Users:</strong> ${counts.users}</p>
+    <p><strong>Properties:</strong> ${counts.properties}</p>
+  `;
+  adminPanel.appendChild(box);
+}
+
+function renderAdminTables(properties, users) {
+  const adminPanel = document.getElementById('adminPanel');
+
+  const propsCard = document.createElement('div');
+  propsCard.className = 'card';
+  propsCard.innerHTML = '<h3>All Properties</h3>';
+  const pTable = document.createElement('table');
+  pTable.style.width = '100%';
+  pTable.innerHTML = '<tr><th>ID</th><th>Name</th><th>City</th><th>Rent</th><th>Owner</th></tr>' +
+    properties.map(p => `<tr><td>${p.id}</td><td>${p.name||''}</td><td>${p.city||''}</td><td>${p.rent||''}</td><td>${p.owner? (p.owner.username || p.owner.email || p.owner.id):''}</td></tr>`).join('');
+  propsCard.appendChild(pTable);
+  adminPanel.appendChild(propsCard);
+
+  const usersCard = document.createElement('div');
+  usersCard.className = 'card';
+  usersCard.innerHTML = '<h3>All Users</h3>';
+  const uTable = document.createElement('table');
+  uTable.style.width = '100%';
+  uTable.innerHTML = '<tr><th>ID</th><th>Username</th><th>Email</th><th>Phone</th><th>Role</th></tr>' +
+    users.map(u => `<tr><td>${u.id}</td><td>${u.username||''}</td><td>${u.email||''}</td><td>${u.phone||''}</td><td>${u.role||''}</td></tr>`).join('');
+  usersCard.appendChild(uTable);
+  adminPanel.appendChild(usersCard);
+}
+
+async function loadAdminData() {
+  document.getElementById('adminPanel').innerHTML = '';
+  try {
+    const counts = await fetchJson('/admin/counts');
+    const properties = await fetchJson('/admin/properties');
+    const users = await fetchJson('/admin/users');
+    renderAdminCounts(counts);
+    renderAdminTables(properties, users);
+    // also show properties in main results area for convenience
+    renderPropertiesList(properties);
   } catch (err) {
-    console.error('Error:', err);
-    alert('Error deleting property');
+    console.error('Admin load failed', err);
+    document.getElementById('results').innerHTML = '<div class="card">Cannot load admin data. Make sure you are logged in as ADMIN.</div>';
   }
 }
 
-// Load properties on page load
-loadMyProperties();
+// Entry: decide which view to show based on current user
+(async function init() {
+  try {
+    const me = await fetchJson('/auth/me');
+    if (me.role && me.role.toUpperCase() === 'ADMIN') {
+      document.getElementById('pageTitle').innerText = 'Admin Dashboard';
+      await loadAdminData();
+    } else {
+      // Non-admin: show their properties
+      await loadMyProperties();
+    }
+  } catch (err) {
+    // Not authenticated or error - show my properties (which will redirect to login if unauthorized)
+    await loadMyProperties();
+  }
+})();
 
+// Logout handler
 document.getElementById('logoutLink').onclick = async (e) => {
   e.preventDefault();
   await fetch('/auth/logout', { method: 'POST' });

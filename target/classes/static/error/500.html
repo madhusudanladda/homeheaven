@@ -1,13 +1,174 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <title>Server Error</title>
-    <style>body{font-family:Arial,Helvetica,sans-serif;text-align:center;padding:40px;color:#333}h1{font-size:48px}p{font-size:18px}</style>
-  </head>
-  <body>
-    <h1>Uh-oh — Server error</h1>
-    <p>Something went wrong on our end. Try again later.</p>
-    <p><a href="/">Return to Home</a></p>
-  </body>
+<head>
+  <meta charset="utf-8">
+  <title>500 - Server Error | Home Heaven</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+
+    body{
+      font-family:'Inter',sans-serif;
+      background:linear-gradient(135deg,#fef2f2,#fff,#fef2f2);
+      min-height:100vh;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      padding:20px;
+      color:#1a1a1a;
+      text-align:center;
+    }
+
+    .error-container{max-width:650px;}
+
+    .error-icon{
+      width:140px;height:140px;border-radius:50%;
+      background:linear-gradient(135deg,#dc2626,#ef4444);
+      display:flex;align-items:center;justify-content:center;
+      margin:0 auto 32px;
+      box-shadow:0 20px 60px rgba(220,38,38,0.3);
+      animation:pulse 2.5s ease-in-out infinite;
+    }
+
+    @keyframes pulse{
+      0%,100%{transform:scale(1);}
+      50%{transform:scale(1.06);}
+    }
+
+    .error-icon i{
+      font-size:64px;color:white;
+      animation:shake 4s infinite ease-in-out;
+    }
+
+    @keyframes shake{
+      0%,100%{transform:rotate(0deg);}
+      20%{transform:rotate(-6deg);}
+      40%{transform:rotate(6deg);}
+      60%{transform:rotate(-4deg);}
+      80%{transform:rotate(4deg);}
+    }
+
+    .error-code{
+      font-size:120px;font-weight:800;color:#dc2626;
+      margin-bottom:12px;text-shadow:3px 3px rgba(220,38,38,0.1);
+    }
+
+    .error-title{
+      font-size:32px;font-weight:700;margin-bottom:10px;
+    }
+
+    .error-message{
+      font-size:18px;color:#737373;margin-bottom:35px;line-height:1.6;
+    }
+
+    .error-actions{
+      display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:40px;
+    }
+
+    .btn{
+      padding:14px 32px;border-radius:12px;
+      font-size:16px;font-weight:600;text-decoration:none;
+      display:inline-flex;align-items:center;gap:10px;
+      cursor:pointer;border:none;transition:.3s;
+    }
+
+    .btn-primary{
+      background:linear-gradient(135deg,#dc2626,#ef4444);
+      color:white;box-shadow:0 4px 12px rgba(220,38,38,0.3);
+    }
+
+    .btn-primary:hover{
+      transform:translateY(-2px);
+      box-shadow:0 8px 20px rgba(220,38,38,0.4);
+    }
+
+    .btn-secondary{
+      background:white;color:#dc2626;border:2px solid #dc2626;
+    }
+
+    .btn-secondary:hover{
+      background:#dc2626;color:white;transform:translateY(-2px);
+    }
+
+    /* Info Box */
+    .info-box{
+      background:white;padding:24px;border-radius:16px;
+      box-shadow:0 4px 12px rgba(0,0,0,0.08);
+      border-left:4px solid #dc2626;margin-top:20px;
+    }
+
+    .info-box h3{
+      font-size:20px;font-weight:600;
+      display:flex;justify-content:center;gap:10px;
+      color:#1a1a1a;margin-bottom:14px;
+    }
+
+    .info-box p{
+      color:#525252;font-size:15px;line-height:1.6;
+    }
+
+    .info-list{list-style:none;margin-top:16px;text-align:left;display:inline-block;}
+    .info-list li{
+      padding:8px 0;display:flex;align-items:center;gap:10px;
+      color:#525252;font-size:14px;
+    }
+    .info-list i{color:#dc2626;font-size:12px;}
+
+    @media(max-width:640px){
+      .error-code{font-size:85px;}
+      .error-title{font-size:24px;}
+      .error-actions{flex-direction:column;}
+      .btn{width:100%;justify-content:center;}
+    }
+  </style>
+</head>
+
+<body>
+  <div class="error-container">
+
+    <div class="error-icon">
+      <i class="fa-solid fa-server"></i>
+    </div>
+
+    <div class="error-code">500</div>
+
+    <h1 class="error-title">Internal Server Error</h1>
+
+    <p class="error-message">
+      Something went wrong on our end.<br>
+      Our team has been notified and is working on it.
+    </p>
+
+    <div class="error-actions">
+      <a href="/dashboard.html" class="btn btn-primary">
+        <i class="fa-solid fa-house"></i> Go to Dashboard
+      </a>
+
+      <button onclick="location.reload()" class="btn btn-secondary">
+        <i class="fa-solid fa-rotate"></i> Try Again
+      </button>
+    </div>
+
+    <div class="info-box">
+      <h3>
+        <i class="fa-solid fa-circle-info"></i>
+        What you can try:
+      </h3>
+
+      <p>If the problem continues, try one of the following steps:</p>
+
+      <ul class="info-list">
+        <li><i class="fa-solid fa-circle"></i> Refresh the page after a moment</li>
+        <li><i class="fa-solid fa-circle"></i> Clear browser cache & cookies</li>
+        <li><i class="fa-solid fa-circle"></i> Try a different browser</li>
+        <li><i class="fa-solid fa-circle"></i> Contact support if issue persists</li>
+      </ul>
+    </div>
+
+  </div>
+</body>
 </html>

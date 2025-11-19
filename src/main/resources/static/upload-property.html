@@ -1,47 +1,217 @@
 <!doctype html>
-<html>
-<head><meta charset="utf-8"><title>Upload Property - Home Heaven</title>
-<link rel="stylesheet" href="/css/style.css"></head>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>Upload Property - Home Heaven</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{
+      font-family:'Inter',sans-serif;
+      background:linear-gradient(to bottom,#fff,#fff7ed);
+      min-height:100vh;
+    }
+    .navbar{
+      background:white;
+      border-bottom:1px solid #e5e5e5;
+    }
+    .nav-wrapper{
+      max-width:1280px;
+      margin:auto;
+      padding:0 24px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      height:72px;
+    }
+    .logo{font-weight:700;font-size:24px;color:#ea580c;}
+    .nav-menu a{
+      text-decoration:none;color:#525252;margin-left:20px;
+      font-weight:500;
+    }
+    .container{
+      max-width:800px;margin:40px auto;padding:0 24px;
+    }
+    .upload-card{
+      background:white;
+      border-radius:16px;
+      padding:40px;
+      box-shadow:0 4px 10px rgba(0,0,0,0.1);
+    }
+    .page-header{text-align:center;margin-bottom:20px;}
+    .page-header h1{font-size:32px;font-weight:700;}
+    .form-group{margin-bottom:20px;display:flex;flex-direction:column;}
+    .form-label{font-weight:600;margin-bottom:6px;}
+    .form-input,.form-select,.form-textarea{
+      padding:12px;border-radius:10px;
+      border:1.5px solid #e5e5e5;font-size:15px;
+    }
+    .form-textarea{min-height:120px;resize:vertical;}
+    .word-count{font-size:13px;color:#737373;margin-top:4px;}
+    .word-count.warning{color:#ea580c;}
+    .submit-btn{
+      width:100%;padding:14px;background:linear-gradient(135deg,#ea580c,#f97316);
+      color:white;border:none;border-radius:10px;
+      font-weight:600;font-size:16px;cursor:pointer;
+    }
+    .submit-btn:hover{opacity:.9;}
+    .message{margin-top:20px;padding:16px;border-radius:10px;text-align:center;}
+    .message.success{background:#dcfce7;color:#166534;border:1px solid #86efac;}
+    .message.error{background:#fee2e2;color:#991b1b;border:1px solid #fca5a5;}
+  </style>
+</head>
+
 <body>
-<div class="container">
-  <div class="card" style="max-width:800px;margin:0 auto">
-    <h2>Upload Property</h2>
-    <form id="uploadForm" enctype="multipart/form-data">
-      <input name="name" placeholder="Property name" required>
-      <input name="address" placeholder="Address" required>
-      <input name="city" placeholder="City / Area" required>
-      <select name="propertyType" id="ptype" required>
-        <option>PG</option><option>Hostel</option><option>Flat</option><option>House</option>
-      </select>
-      <input name="rent" type="number" placeholder="Rent" required>
-      <input name="sqft" id="sqft" placeholder="Square feet (for Flats)">
-      <select name="sharingOption" id="sharing">
-        <option value="">Select sharing (for PG)</option>
-        <option>2-sharing</option><option>3-sharing</option><option>4-sharing</option>
-      </select>
-      <textarea name="description" placeholder="Description (min 100 words)" rows="6" required></textarea>
-      <input type="file" name="images" multiple accept="image/*">
-      <button type="submit">Upload</button>
-    </form>
-    <div id="msg"></div>
+
+  <!-- NAV -->
+  <nav class="navbar">
+    <div class="nav-wrapper">
+      <a href="/dashboard.html" class="logo">HomeHeaven</a>
+      <div class="nav-menu">
+        <a href="/dashboard.html">Dashboard</a>
+        <a href="/admin.html">My Properties</a>
+        <a href="/dashboard.html" style="color:#ea580c;font-weight:700">Back</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <div class="container">
+    <div class="upload-card">
+
+      <div class="page-header">
+        <h1>Upload Property</h1>
+        <p>Fill in the details to list your property</p>
+      </div>
+
+      <form id="uploadForm" enctype="multipart/form-data">
+
+        <div class="form-group">
+          <label class="form-label">Property Name</label>
+          <input name="name" class="form-input" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">City / Area</label>
+          <input name="city" class="form-input" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Full Address</label>
+          <input name="address" class="form-input" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Property Type</label>
+          <select name="propertyType" id="ptype" class="form-select" required>
+            <option value="">Select...</option>
+            <option>PG</option>
+            <option>Hostel</option>
+            <option>Flat</option>
+            <option>House</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Monthly Rent</label>
+          <input type="number" name="rent" class="form-input" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Square Feet (Flats only)</label>
+          <input name="sqft" id="sqft" class="form-input">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Sharing (PG only)</label>
+          <select name="sharingOption" id="sharing" class="form-select">
+            <option value="">Select sharing</option>
+            <option>2-sharing</option>
+            <option>3-sharing</option>
+            <option>4-sharing</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Description (100 words minimum)</label>
+          <textarea name="description" id="description" class="form-textarea" required></textarea>
+          <div id="wordCount" class="word-count">0 words (minimum 100 required)</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Images</label>
+          <input type="file" name="images" multiple accept="image/*" class="form-input">
+        </div>
+
+        <button type="submit" class="submit-btn">Upload Property</button>
+      </form>
+
+      <div id="msg"></div>
+    </div>
   </div>
-</div>
-<script>
-document.getElementById('uploadForm').onsubmit=async(e)=>{
-  e.preventDefault();
-  const f=new FormData(e.target);
-  const desc = f.get('description')||'';
-  const wc = desc.trim().split(/\s+/).filter(s=>s).length;
-  if(wc < 100){ document.getElementById('msg').innerText = 'Description must be at least 100 words. Current: '+wc; return; }
-  const res = await fetch('/properties/upload',{method:'POST', body: f});
-  const t = await res.text();
-  if(res.ok){ 
-    document.getElementById('msg').innerHTML = 'Property uploaded successfully!<br><a href="/dashboard.html" style="color:blue;text-decoration:underline;cursor:pointer">← Back to Dashboard</a>'; 
-    document.getElementById('uploadForm').style.display='none';
-  } else { 
-    document.getElementById('msg').innerText = t; 
-  }
-}
-</script>
+
+  <script>
+    // WORD COUNTER
+    const desc = document.getElementById('description');
+    const wcDiv = document.getElementById('wordCount');
+
+    desc.addEventListener("input", () => {
+      const w = desc.value.trim().split(/\s+/).filter(s => s).length;
+      wcDiv.textContent = `${w} words (minimum 100 required)`;
+      wcDiv.classList.toggle("warning", w < 100);
+    });
+
+    // OLD BACKEND MATCH
+    document.getElementById('uploadForm').onsubmit = async (e) => {
+      e.preventDefault();
+
+      const fd = new FormData(e.target);
+      const w = (fd.get("description") || "").trim().split(/\s+/).filter(s => s).length;
+
+      if (w < 100) {
+        document.getElementById("msg").innerHTML =
+          `<div class="message error">Description must be at least 100 words. Current: ${w}</div>`;
+        return;
+      }
+
+      const submitBtn = e.target.querySelector("button");
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> Uploading...";
+
+      try {
+        const res = await fetch("/properties/upload", { method: "POST", body: fd });
+        const t = await res.text();
+
+        if (res.ok) {
+          document.getElementById("msg").innerHTML =
+            `<div class="message success"><i class='fa-solid fa-circle-check'></i> 
+              Property uploaded successfully!<br><br>
+              <a href="/dashboard.html">← Back to Dashboard</a>
+            </div>`;
+          document.getElementById("uploadForm").style.display = "none";
+
+        } else {
+          document.getElementById("msg").innerHTML =
+            `<div class="message error"><i class='fa-solid fa-circle-xmark'></i> ${t}</div>`;
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = "Upload Property";
+        }
+
+      } catch (err) {
+        document.getElementById("msg").innerHTML =
+          `<div class="message error">Error occurred. Please try again.</div>`;
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = "Upload Property";
+      }
+    };
+  </script>
+
 </body>
 </html>
