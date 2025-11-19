@@ -24,9 +24,11 @@ cd C:\Users\Mladda\Downloads\homeheaven_full
 C:\Users\Mladda\tools\maven\bin\mvn.cmd clean package -DskipTests
 ```
 
-
-Get-Process java -ErrorAction SilentlyContinue | Stop-Process -Force; Start-Sleep -Seconds 2; C:\Users\Mladda\tools\maven\bin\mvn.cmd -DskipTests clean package 2>&1 | Select-Object -Last 20 
-
+#### If Build Fails with "Failed to delete JAR"
+The JAR file is still running. Stop the Java process and rebuild:
+```powershell
+Get-Process java -ErrorAction SilentlyContinue | Stop-Process -Force; Start-Sleep -Seconds 2; C:\Users\Mladda\tools\maven\bin\mvn.cmd -DskipTests clean package 2>&1 | Select-Object -Last 20
+```
 
 
 ### Step 3: Run the Application
